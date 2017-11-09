@@ -23,3 +23,12 @@ clean.text <- function(x)
     x <- gsub(" $", "", x)  # Remove ending blank spaces
     return(x)
 }
+
+##' [clear.history] Function to clear R history (removing sensitive information)
+clear.history <- function() {  # Create a function to wipe your R history
+    write("", file=".blank")
+    loadhistory(".blank")
+    unlink(".blank")
+  }
+
+clear.history()  # Remove sensitive data from your R History (CLEARS ALL OF YOUR HISTORY)
