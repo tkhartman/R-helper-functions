@@ -32,3 +32,13 @@ clear.history <- function() {  # Create a function to wipe your R history
   }
 
 clear.history()  # Remove sensitive data from your R History (CLEARS ALL OF YOUR HISTORY)
+                   
+##' [match.order] Function to test whether elements in two vectors match and/or are in the correct order
+match.order <- function(x,y) {
+    if (isTRUE(all.equal(x,y))) 
+        print('Perfect match in same order')
+    if (!isTRUE(all.equal(x,y)) && isTRUE(all.equal(sort(x),sort(y))))
+        print('Perfect match in wrong order')
+    if (!isTRUE(all.equal(x,y)) && !isTRUE(all.equal(sort(x),sort(y))))
+        print('No match')
+}
