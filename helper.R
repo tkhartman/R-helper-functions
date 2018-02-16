@@ -86,4 +86,12 @@ multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL,
         }
     }
 }
+   
+                   
+## [boot.se] Bootstrapped standard errors with 95% CI and 10,000 replications 
+boot.se <- function(formula, data, indices) {
+    d <- data[indices, ]  # Select sample 
+    fit <- lm(formula, data = d)
+    return(coef(fit)) 
+} 
 
