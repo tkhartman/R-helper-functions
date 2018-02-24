@@ -42,6 +42,7 @@ match.order <- function(x,y) {
     if (!isTRUE(all.equal(x,y)) && !isTRUE(all.equal(sort(x),sort(y))))
         print('No match')
 }
+
                    
 ##' [multiplot] Function to combine multiple plots
 ## Source -- http://www.cookbook-r.com/Graphs/Multiple_graphs_on_one_page_(ggplot2)/
@@ -86,6 +87,10 @@ multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL,
         }
     }
 }
+
+## Example - Making multiple plots
+multiplot(h1, h2, h3, cols = 3, 
+          labs = list("Distribution of 2017 Predicted Seat Marginality", ""))
    
                    
 ## [boot.se] Bootstrapped standard errors with 95% CI and 10,000 replications 
@@ -94,4 +99,17 @@ boot.se <- function(formula, data, indices) {
     fit <- lm(formula, data = d)
     return(coef(fit)) 
 } 
+
+## Example - Bootstrapping with 10,000 replications 
+require(boot)
+boot.m1 <- boot(data = df, statistic = boot.se, R = 10000, 
+                formula = Turnout17 ~ Turnout15 + vote.2015.margin + 
+                    yg.margin + ac.margin)
+boot.m1
+boot.ci(boot.m1, type = "bca", index = 1)  # Intercept 95% CI
+boot.ci(boot.m1, type = "bca", index = 2)  # B1 95% CI
+boot.ci(boot.m1, type = "bca", index = 3)  # B2 95% CI
+boot.ci(boot.m1, type = "bca", index = 4)  # B3 95% CI
+boot.ci(boot.m1, type = "bca", index = 5)  # B4 95% CI                   
+                   
 
