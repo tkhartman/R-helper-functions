@@ -2,7 +2,7 @@
 ##' [maxn] Find nth highest column position for each row
 maxn <- function(n) function(x) order(x, decreasing = TRUE)[n]  # function
 df$first <- apply(df, 1, function(x)x[maxn(1)(x)])  # Maximum value
-df$second <- apply(df, 1, function(x)x[maxn(1)(x)])  # Second highest value
+df$second <- apply(df, 1, function(x)x[maxn(2)(x)])  # Second highest value
                    
 ##' [rescale01] Function to rescale a variable from 0 to 1
 rescale01 <- function(x) {
@@ -113,3 +113,18 @@ boot.ci(boot.m1, type = "bca", index = 4)  # B3 95% CI
 boot.ci(boot.m1, type = "bca", index = 5)  # B4 95% CI                   
                    
 
+## [odds.ratio] Calculate odds ratios following (ordered) logistic regression
+odds.ratio <- function(model) {
+    ctable <- coef(summary(model)) 
+    pvalue <- pnorm(abs(ctable[ , "t value"]), lower.tail = FALSE) * 2
+    ctable <- cbind(ctable, "p value" = pvalue)
+    ci <- confint(model)
+    odds <- exp(cbind(OR = coef(model), ci))
+    out <- list("Estimates" = ctable, "Odds Ratios" = odds)
+    return(out)
+}
+
+## Example
+m1 <- polr(formula = y ~ x, data = df, Hess = T)  # Ordered logit
+summary(m1)
+odds.ratio(m1)
