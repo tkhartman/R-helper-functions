@@ -128,3 +128,34 @@ odds.ratio <- function(model) {
 m1 <- polr(formula = y ~ x, data = df, Hess = T)  # Ordered logit
 summary(m1)
 odds.ratio(m1)
+                   
+
+## [vcovCL] Calculate cluster-robust standard errors following 'polr'
+vcovCL <- function(object, cluster = NULL, adjust = NULL) {
+    stopifnot(require("sandwich"))
+    ## Cluster specification
+    if(is.null(cluster)) cluster <- attr(object, "cluster")
+    if(is.null(cluster)) stop("no 'cluster' specification found")
+    cluster <- factor(cluster)
+    ## Estimating functions and dimensions
+    ef <- estfun(object)
+    n <- NROW(ef)
+    k <- NCOL(ef)
+    if(n != length(cluster))
+        stop("length of 'cluster' does not match number of observations")
+    m <- length(levels(cluster))
+    ## Aggregate estimating functions by cluster and compute meat
+    ef <- sapply(levels(cluster), function(i) colSums(ef[cluster == i, , drop = FALSE]))
+    ef <- if(NCOL(ef) > 1L) t(ef) else matrix(ef, ncol = 1L)
+    mt <- crossprod(ef)/n
+    ## Bread
+    br <- try(bread(object), silent = TRUE)
+    if(inherits(br, "try-error")) br <- vcov(object) * n
+    ## Put together sandwich
+    vc <- 1/n * (br %*% mt %*% br)
+    ## Adjustment
+    if(is.null(adjust)) adjust <- class(object)[1L] == "lm"
+    adj <- if(adjust) m/(m - 1L) * (n - 1L)/(n - k) else m/(m - 1L)
+    ## Return
+    return(adj * vc)
+}
