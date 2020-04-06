@@ -1,3 +1,6 @@
+##' [sjPlot] View codebook (variable and value labels)
+require(sjPlot)
+sjPlot::view_df(df)  # Print codeobook, where 'df' is the dataframe name
 
 ##' [maxn] Find nth highest column position for each row
 maxn <- function(n) function(x) order(x, decreasing = TRUE)[n]  # function
