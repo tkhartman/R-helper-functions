@@ -1,18 +1,19 @@
-##' [sjPlot] View codebook (variable and value labels)
+## [sjPlot] View codebook (variable and value labels)
 require(sjPlot)
 sjPlot::view_df(df)  # Print codeobook, where 'df' is the dataframe name
 
-##' [maxn] Find nth highest column position for each row
+## [maxn] Find nth highest column position for each row
 maxn <- function(n) function(x) order(x, decreasing = TRUE)[n]  # function
 df$first <- apply(df, 1, function(x)x[maxn(1)(x)])  # Maximum value
 df$second <- apply(df, 1, function(x)x[maxn(2)(x)])  # Second highest value
                    
-##' [rescale01] Function to rescale a variable from 0 to 1
-rescale01 <- function(x) {
-  (x - min(x)) / ((max(x)) - min(x))
+## [rescale01] Function to rescale a variable from 0 to 1
+## Can pass na.rm = TRUE argument
+rescale01 <- function(x, ...) {
+  (x - min(x, ...)) / ((max(x, ...)) - min(x, ...))
 }
                    
-##' [clean.text] Function to clean Twitter data
+## [clean.text] Function to clean Twitter data
 clean.text <- function(x)
 {
     x <- tolower(x)      # To lower case
@@ -27,7 +28,7 @@ clean.text <- function(x)
     return(x)
 }
 
-##' [clear.history] Function to clear R history (removing sensitive information)
+## [clear.history] Function to clear R history (removing sensitive information)
 clear.history <- function() {  # Create a function to wipe your R history
     write("", file=".blank")
     loadhistory(".blank")
@@ -36,7 +37,7 @@ clear.history <- function() {  # Create a function to wipe your R history
 
 clear.history()  # Remove sensitive data from your R History (CLEARS ALL OF YOUR HISTORY)
                    
-##' [match.order] Function to test whether elements in two vectors match and/or are in the correct order
+## [match.order] Function to test whether elements in two vectors match and/or are in the correct order
 match.order <- function(x,y) {
     if (isTRUE(all.equal(x,y))) 
         print('Perfect match in same order')
@@ -47,7 +48,7 @@ match.order <- function(x,y) {
 }
 
                    
-##' [multiplot] Function to combine multiple plots
+## [multiplot] Function to combine multiple plots
 ## Source -- http://www.cookbook-r.com/Graphs/Multiple_graphs_on_one_page_(ggplot2)/
 multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL, 
                       labs=list(), labpos=list(c(0.5,0.01), c(0.02,0.5))) {
@@ -162,3 +163,7 @@ vcovCL <- function(object, cluster = NULL, adjust = NULL) {
     ## Return
     return(adj * vc)
 }
+                 
+## Use 'jtools' package to plot regression results (coefficient plots)
+summ(regression.model)
+plot_summs(regression.model, inner_ci_level = .9)
