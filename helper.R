@@ -167,3 +167,43 @@ vcovCL <- function(object, cluster = NULL, adjust = NULL) {
 ## Use 'jtools' package to plot regression results (coefficient plots)
 summ(regression.model)
 plot_summs(regression.model, inner_ci_level = .9)
+
+                 
+## WEB SCRAPING EXAMPLE -- 'automagically' log into website to scrape data
+## Load packages using 'pacman' package manager
+pacman::p_load(haven, httr, RCurl, rvest)
+
+## Log into the British Election Study website for downloading data
+login.bes <- "https://www.britishelectionstudy.com/wp-login.php"
+session <- html_session(login.bes)
+form <- html_form(session)[[1]]
+filled_form <- set_values(form,
+                          log = 'XXXXXXXXXXXX',     # Replace with Username
+                          pwd = 'XXXXXXXXXXXX')     # Replace with Password
+## Save main page url
+main_page <- submit_form(session, filled_form)
+
+## URLS to BES data files; store in vector
+url.w4 <- "https://www.britishelectionstudy.com/wp-content/uploads/2020/02/BES2015_W4_v4.0.sav"
+url.w5 <- "https://www.britishelectionstudy.com/wp-content/uploads/2018/09/BES2015_W5_v3.9.sav"
+url.w11 <- "https://www.britishelectionstudy.com/wp-content/uploads/2020/02/BES2015_W11_v1.6.sav"
+url.w12 <- "https://www.britishelectionstudy.com/wp-content/uploads/2020/02/BES2015_W12_v1.6.sav"
+url.w17 <- "https://www.britishelectionstudy.com/wp-content/uploads/2020/02/BES2019_W17_v0.1.sav"
+url.w18 <- "https://www.britishelectionstudy.com/wp-content/uploads/2020/02/BES2019_W18_v0.1.sav"
+url.results <- "https://www.britishelectionstudy.com/wp-content/uploads/2020/02/BES-2019-General-Election-results-file-v1.0.sav"
+
+links <- c(url.w4, url.w5, url.w11, url.w12, url.w17, url.w18, url.results)
+
+## Extract filenames and store in vector
+files <- c(basename(url.w4), basename(url.w5),     # 2015 GE
+           basename(url.w11), basename(url.w12),   # 2017 GE
+           basename(url.w17), basename(url.w18),   # 2019 GE
+           basename(url.results) )                 # Constituency results    
+
+## Loop to download data file(s) if not in working directory
+for (i in 1:length(files) ) {
+if (!file.exists(files[i]) )
+  { download <- jump_to(main_page, links[i])
+  writeBin(download[['response']][['content']], files[i])
+  }
+}
