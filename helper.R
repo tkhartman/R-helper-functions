@@ -5,6 +5,7 @@ sjPlot::view_df(df)  # Print codeobook, where 'df' is the dataframe name
 ## Import password protected SPSS files
 ## Use 'readspss' package to import password protected files
 # devtools::install_git("https://github.com/JanMarvin/readspss.git") # For passowrd-protected files
+remotes::install_github("JanMarvin/readspss")
 require(readspss)
 df <- readspss::read.sav('COVID W1_W2_W3_W4_W5_W6 Cleaned 5364.sav', 
                               pass = 'ENTER PASSWORD HERE' )
