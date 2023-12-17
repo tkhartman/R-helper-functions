@@ -2,6 +2,12 @@
 require(sjPlot)
 sjPlot::view_df(df)  # Print codeobook, where 'df' is the dataframe name
 
+## Import password protected SPSS files
+## Use 'readspss' package to import password protected files
+require(readspss)
+df <- readspss::read.sav('COVID W1_W2_W3_W4_W5_W6 Cleaned 5364.sav', 
+                              pass = 'ENTER PASSWORD HERE' )
+
 ## [maxn] Find nth highest column position for each row
 maxn <- function(n) function(x) order(x, decreasing = TRUE)[n]  # function
 df$first <- apply(df, 1, function(x)x[maxn(1)(x)])  # Maximum value
